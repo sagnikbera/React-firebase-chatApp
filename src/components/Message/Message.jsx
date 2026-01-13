@@ -23,7 +23,7 @@ const Message = ({ isSender, text, imageUrl, time }) => {
           <img
             src={imageUrl}
             alt="sent"
-            className="max-w-[220px] max-h-[300px] rounded-xl mb-2 object-cover"
+            className="`max-w-[220px] max-h-[300px]` rounded-xl mb-2 object-cover"
           />
         )}
 
