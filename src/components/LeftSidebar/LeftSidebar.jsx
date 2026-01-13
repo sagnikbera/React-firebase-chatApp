@@ -10,12 +10,24 @@ const LeftSidebar = () => {
         <div className="ls-nav flex items-center justify-between">
           <img src={assets.logo} className="logo max-h-10" alt="logo" />
           {/* menu  */}
-          <div className="menu">
+          <div className="menu relative group">
             <img
               src={assets.menu_icon}
               alt=""
               className="max-h-8 opacity-80 cursor-pointer"
             />
+            {/* onclick sub menu  */}
+            <div className="sub-menu hidden group-hover:block absolute  top-full right-5 w-40 p-5 rounded-l-2xl rounded-br-2xl bg-white/20 backdrop-blur-3xl text-black shadow-lg ">
+              <p className="cursor-pointer text-sm font-semibold hover:font-bold transition-all px-1 py-1 text-center bg-blue-400 hover:bg-blue-500 rounded-2xl">
+                Edit Profile
+              </p>
+
+              <hr className="border-none `h-[1px]` bg-[#a5a5a5] my-1" />
+
+              <p className="cursor-pointer text-sm font-semibold hover:font-bold transition-all bg-red-400 hover:bg-red-600 px-3 py-1 text-center rounded-2xl">
+                Logout
+              </p>
+            </div>
           </div>
         </div>
         {/* search  */}
@@ -44,7 +56,7 @@ const LeftSidebar = () => {
                 className="w-12 aspect-square rounded-full object-cover"
               />
               <div className="flex flex-col">
-                <p>Richard Sanford</p>
+                <p>Sagnik Bera</p>
                 <span className="text-sm text-white/70">
                   Hello , How are you?
                 </span>

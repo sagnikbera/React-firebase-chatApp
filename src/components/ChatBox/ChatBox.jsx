@@ -1,16 +1,19 @@
 import React from 'react';
-import './ChatBox.css';
-import assets from '../../assets/assets';
+import ChatHeader from './ChatHeader';
+import ChatBody from './ChatBody';
+import ChatInput from './ChatInput';
 
 const ChatBox = () => {
   return (
-    <div className="chat-box">
-      <div className="chat-user">
-        <img src={assets.profile_img} alt="" />
-        <p>
-          Richard Sanford <img src={assets.green_dot} alt="" />
-        </p>
-        <img src={assets.help_icon} alt="" className="help" />
+    <div className="chat-box h-full bg-[#041f2b] flex flex-col">
+      <ChatHeader />
+
+      <div className="flex-1 overflow-y-auto px-4 pb-24">
+        <ChatBody />
+      </div>
+
+      <div className="sticky bottom-3 bg-[#041f2b] pt-2">
+        <ChatInput />
       </div>
     </div>
   );

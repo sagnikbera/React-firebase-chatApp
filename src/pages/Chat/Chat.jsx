@@ -11,7 +11,7 @@ const Chat = () => {
       // grid place-items-center
       style={{ backgroundImage: "url('/chat_BG.png')" }}
     >
-      <div className="chat-container w-[95%] h-[75vh] max-w-6xl bg-white grid grid-cols-4 rounded-2xl overflow-hidden">
+      <div className="chat-container w-[95%] h-[75vh] max-w-6xl bg-white/10 backdrop-blur-md grid grid-cols-4 rounded-2xl overflow-hidden">
         <div className="col-span-1">
           <LeftSidebar />
         </div>
