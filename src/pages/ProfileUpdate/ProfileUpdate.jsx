@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const ProfileUpdate = () => {
-  return (
-    <div>
-      p
-    </div>
-  )
-}
+  return <div>p</div>;
+};
 
-export default ProfileUpdate
+export default ProfileUpdate;
