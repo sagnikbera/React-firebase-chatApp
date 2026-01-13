@@ -1,8 +1,8 @@
-chat-container {
+/* .chat-container {
     width: 95%;
     height: 75vh;
-    max-width: 100px;
+    max-width: 1000px;
     background-color: white;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
-}
+} */
