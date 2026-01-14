@@ -9,21 +9,20 @@ import { auth } from './config/firebase';
 // import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
-
   const navigate = useNavigate();
 
   useEffect(() => {
-    onAuthStateChanged(auth , async (user) => {
-        if(user) {
-            navigate('/chat');
-            // console.log('====================================');
-            // console.log(user);
-            // console.log('====================================');
-        } else {
-            navigate('/');
-        }
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        navigate('/chat');
+        // console.log('====================================');
+        // console.log(user);
+        // console.log('====================================');
+      } else {
+        navigate('/');
+      }
     });
-  } , []);
+  }, []);
 
   return (
     <>

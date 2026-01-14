@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import assets from '../../assets/assets.js';
-import { signup , login } from '../../config/firebase';
+import { signup, login } from '../../config/firebase';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
@@ -17,7 +17,7 @@ const Login = () => {
     if (currState === 'Sign Up') {
       signup(userName, email, password);
     } else {
-      login(email , password)
+      login(email, password);
     }
   };
 
@@ -87,25 +87,22 @@ const Login = () => {
           {currState === 'Log In' ? 'Login Now' : 'Create Account'}
         </button>
 
-        {
-          (currState === "Sign Up") &&
-          (
-            <div className="flex items-center gap-2 mt-2">
-          <input
-            type="checkbox"
-            id="terms"
-            className="w-4 h-4 cursor-pointer accent-blue-600"
-            required
-          />
-          <label
-            htmlFor="terms"
-            className="text-sm text-white/80 cursor-pointer"
-          >
-            Agree to the terms and condition
-          </label>
-        </div>
-          )
-        }
+        {currState === 'Sign Up' && (
+          <div className="flex items-center gap-2 mt-2">
+            <input
+              type="checkbox"
+              id="terms"
+              className="w-4 h-4 cursor-pointer accent-blue-600"
+              required
+            />
+            <label
+              htmlFor="terms"
+              className="text-sm text-white/80 cursor-pointer"
+            >
+              Agree to the terms and condition
+            </label>
+          </div>
+        )}
 
         {/* login || signup */}
         <div className="text-center mt-4">
