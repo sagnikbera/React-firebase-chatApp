@@ -16,6 +16,9 @@ const App = () => {
     onAuthStateChanged(auth , async (user) => {
         if(user) {
             navigate('/chat');
+            // console.log('====================================');
+            // console.log(user);
+            // console.log('====================================');
         } else {
             navigate('/');
         }
