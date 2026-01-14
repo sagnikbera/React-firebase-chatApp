@@ -1,8 +1,23 @@
 import React, { useState } from 'react';
 import assets from '../../assets/assets.js';
+import { signup } from '../../config/firebase';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
   const [currState, setCurrState] = useState('Sign Up');
+
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    console.log(userName, email, password);
+    if (currState === 'Sign Up') {
+      signup(userName, email, password);
+    }
+  };
 
   return (
     <div
@@ -17,7 +32,10 @@ const Login = () => {
       />
 
       {/* Card*/}
-      <form className="bg-white/10 backdrop-blur-md border border-white/20 p-8 md:p-10 rounded-2xl shadow-2xl flex flex-col gap-4 w-full max-w-md">
+      <form
+        onSubmit={onSubmitHandler}
+        className="bg-white/10 backdrop-blur-md border border-white/20 p-8 md:p-10 rounded-2xl shadow-2xl flex flex-col gap-4 w-full max-w-md"
+      >
         <h2 className="text-2xl font-bold text-white text-center mb-2">
           {currState}
         </h2>
@@ -29,6 +47,8 @@ const Login = () => {
             placeholder="username"
             className="bg-white/5 border border-white/20 p-3 rounded-lg text-white placeholder-white/50 focus:outline-none focus:bg-white/10 focus:ring-1 focus:ring-blue-400 transition"
             required
+            onChange={(e) => setUserName(e.target.value)}
+            value={userName}
           />
         )}
         <input
@@ -36,13 +56,27 @@ const Login = () => {
           placeholder="email address"
           className="bg-white/5 border border-white/20 p-3 rounded-lg text-white placeholder-white/50 focus:outline-none focus:bg-white/10 focus:ring-1 focus:ring-blue-400 transition"
           required
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
         />
-        <input
-          type="password"
-          placeholder="password"
-          className="bg-white/5 border border-white/20 p-3 rounded-lg text-white placeholder-white/50 focus:outline-none focus:bg-white/10 focus:ring-1 focus:ring-blue-400 transition"
-          required
-        />
+
+        <div className="relative w-full">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="password"
+            className="w-full bg-white/5 border border-white/20 p-3 rounded-lg text-white placeholder-white/50 focus:outline-none focus:bg-white/10 focus:ring-1 focus:ring-blue-400 transition"
+            required
+            onChange={(e) => setPassword(e.target.value)}
+            value={password}
+          />
+          <div
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-white/50 hover:text-white transition"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+          </div>
+        </div>
+
         {/* sbmt  */}
         <button
           type="submit"
