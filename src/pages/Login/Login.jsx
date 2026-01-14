@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import assets from '../../assets/assets.js';
-import { signup } from '../../config/firebase';
+import { signup , login } from '../../config/firebase';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
@@ -16,6 +16,8 @@ const Login = () => {
     console.log(userName, email, password);
     if (currState === 'Sign Up') {
       signup(userName, email, password);
+    } else {
+      login(email , password)
     }
   };
 
@@ -85,7 +87,10 @@ const Login = () => {
           {currState === 'Log In' ? 'Login Now' : 'Create Account'}
         </button>
 
-        <div className="flex items-center gap-2 mt-2">
+        {
+          (currState === "Sign Up") &&
+          (
+            <div className="flex items-center gap-2 mt-2">
           <input
             type="checkbox"
             id="terms"
@@ -99,6 +104,8 @@ const Login = () => {
             Agree to the terms and condition
           </label>
         </div>
+          )
+        }
 
         {/* login || signup */}
         <div className="text-center mt-4">

@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import { doc, getFirestore, setDoc, serverTimestamp } from 'firebase/firestore';
 import { toast } from 'react-toastify';
@@ -17,7 +18,56 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+// Sign Up
+const signup = async (username, email, password) => {
+  try {
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+    const user = res.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      id: user.uid,
+      username: username.toLowerCase(),
+      email,
+      name: "",
+      avatar: "",
+      bio: "Hey, There I am using chat app.",
+      lastSeen: serverTimestamp(),
+    });
+
+    await setDoc(doc(db, "chats", user.uid), {
+      chatData: [],
+    });
+
+  } catch (error) {
+    console.error(error);
+    toast.error(error.code.split('/')[1].split('-').join(" "));
+  }
+};
+
+// Log In
+const login = async (email , password) => {
+    try {
+        await signInWithEmailAndPassword(auth , email , password);
+    } catch (error) {
+        console.error(error);
+        toast.error(error.code.split('/')[1].split('-').join(" "));
+    }
+}
+
+// Log Out
+const logout = async () => {
+    try {
+        await signOut(auth);
+    } catch (error) {
+        console.error(error);
+        toast.error(error.code.split('/')[1].split('-').join(" "));
+    }
+}
+
+export { signup , login , logout , auth , db};
 
 export default app;

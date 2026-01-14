@@ -1,5 +1,6 @@
 import React from 'react';
 import assets from '../../assets/assets';
+import { logout } from '../../config/firebase';
 
 const RightSidebar = () => {
   return (
@@ -45,7 +46,9 @@ const RightSidebar = () => {
       </div>
 
       {/* ✅ STICKY LOGOUT */}
-      <div className="sticky bottom-0 bg-[#053448] p-4 border-t border-white/10">
+      <div 
+      onClick={() => logout()}
+      className="sticky bottom-0 bg-[#053448] p-4 border-t border-white/10">
         <button className="w-full bg-[#041f2b] hover:bg-[#085a7e] text-white py-2 rounded-3xl font-medium transition">
           Log Out
         </button>
