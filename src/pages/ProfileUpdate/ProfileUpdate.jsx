@@ -1,8 +1,71 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import assets from './../../assets/assets';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { auth, db } from '../../config/firebase';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { uploadImageToCloudinary } from '../../utils/cloudinary';
 
 const ProfileUpdate = () => {
-  const [image, setImage] = useState(false);
+  const [image, setImage] = useState(null);
+  const [name, setName] = useState('');
+  const [bio, setBio] = useState('');
+  const [uid, setUid] = useState('');
+  const [prevImage, setPrevImage] = useState('');
+
+  const navigate = useNavigate();
+
+  const profileUpdate = async (event) => {
+    event.preventDefault();
+    try {
+      if (!prevImage && !image) {
+        toast.error('Upload Profile Picture!');
+        return;
+      }
+      const docRef = doc(db, 'users', uid);
+      if (image) {
+        const imageUrl = await uploadImageToCloudinary(image);
+        setPrevImage(imageUrl);
+        await updateDoc(docRef, {
+          avatar: imageUrl,
+          bio: bio,
+          name: name,
+        });
+      } else {
+        await updateDoc(docRef, {
+          bio: bio,
+          name: name,
+        });
+      }
+
+      toast.success("Profile updated successfully!")
+      navigate("/chat");
+      
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  //loading data from database
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUid(user.uid);
+        const docRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setName(data.name || '');
+          setBio(data.bio || '');
+          setPrevImage(data.avatar || '');
+        }
+      } else {
+        navigate('/');
+      }
+    });
+  }, []);
 
   return (
     <div
@@ -13,7 +76,9 @@ const ProfileUpdate = () => {
       <div className="bg-black/30 backdrop-blur-md border border-white/20 p-8 md:p-10 rounded-2xl shadow-2xl flex flex-col gap-6 w-full max-w-lg relative">
         {/* logo or profile */}
         <img
-          src={image ? URL.createObjectURL(image) : assets.logo_icon}
+          src={
+            image ? URL.createObjectURL(image) : prevImage || assets.avatar_icon
+          }
           alt="logo"
           className="w-32 mx-auto bg-[#053448] p-2 rounded-full border border-white/20 shadow-xl"
         />
@@ -22,7 +87,7 @@ const ProfileUpdate = () => {
           Edit Your Profile
         </h2>
 
-        <form className="flex flex-col gap-4">
+        <form onSubmit={profileUpdate} className="flex flex-col gap-4">
           <h3 className="text-white/70 text-sm font-medium uppercase tracking-wider">
             Profile Details
           </h3>
@@ -40,7 +105,11 @@ const ProfileUpdate = () => {
               hidden
             />
             <img
-              src={image ? URL.createObjectURL(image) : assets.avatar_icon}
+              src={
+                image
+                  ? URL.createObjectURL(image)
+                  : prevImage || assets.avatar_icon
+              }
               alt="avatar"
               className="w-12 h-12 rounded-full object-cover bg-black/20"
             />
@@ -55,6 +124,8 @@ const ProfileUpdate = () => {
             placeholder="Your Name"
             className="bg-white/5 border border-white/20 p-3 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-blue-400 transition"
             required
+            onChange={(e) => setName(e.target.value)}
+            value={name}
           />
 
           {/* bio */}
@@ -62,6 +133,8 @@ const ProfileUpdate = () => {
             placeholder="Write profile bio"
             className="bg-white/5 border border-white/20 p-3 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-1 focus:ring-blue-400 transition h-24 resize-none"
             required
+            onChange={(e) => setBio(e.target.value)}
+            value={bio}
           ></textarea>
 
           {/* btn */}
