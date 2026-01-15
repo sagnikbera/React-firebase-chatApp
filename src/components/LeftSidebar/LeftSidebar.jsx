@@ -1,10 +1,44 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import './LeftSidebar.css';
 import assets from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { auth, db } from '../../config/firebase';
+import { AppContext } from '../../context/AppContext';
 
 const LeftSidebar = () => {
+  const { userData } = useContext(AppContext);
+  const [searchedUser, setSearchedUser] = useState(null);
+  const [showSearch, setShowSearch] = useState(false);
   const navigate = useNavigate();
+
+  const inputHandler = async (e) => {
+    try {
+      const input = e.target.value;
+      if (input) {
+        setShowSearch(true);
+        const userRef = collection(db, 'users');
+        const q = query(userRef, where('username', '==', input.toLowerCase()));
+        const querySnap = await getDocs(q);
+
+        //avoid self search
+        if (
+          !querySnap.empty &&
+          querySnap.docs[0].data().id !== auth.currentUser.uid
+        ) {
+          const data = querySnap.docs[0].data();
+          setSearchedUser(data);
+        } else {
+          setSearchedUser(null);
+        }
+      } else {
+        setShowSearch(false);
+        setSearchedUser(null);
+      }
+    } catch (error) {
+      console.error('Search Error: ', error.message);
+    }
+  };
   return (
     <div className="ls h-full text-white flex flex-col bg-[#053448] rounded-l-2xl overflow-hidden">
       {/* nav top  */}
@@ -42,6 +76,7 @@ const LeftSidebar = () => {
             type="text"
             placeholder="Search here"
             className="bg-transparent border-none outline-none text-lg placeholder-white/50"
+            onChange={inputHandler}
           />
         </div>
       </div>
