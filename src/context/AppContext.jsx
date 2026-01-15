@@ -19,7 +19,12 @@ const AppContextProvider = (props) => {
       // console.log(userData);
       setUserData(userDataDB);
       //if the avatar & userdata is available then navigate to chat page, otherwise profile update page
-      if (userDataDB.avatar && userDataDB.name) {
+      const isProfileComplete =
+        userDataDB.avatar?.trim() &&
+        userDataDB.name?.trim() &&
+        userDataDB.bio?.trim();
+
+      if (isProfileComplete) {
         navigate('/chat');
       } else {
         navigate('/profile');

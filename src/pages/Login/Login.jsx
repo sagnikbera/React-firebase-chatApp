@@ -20,13 +20,11 @@ const Login = () => {
       signup(userName, email, password);
     } else {
       login(email, password);
-      navigate('/chat');
     }
   };
 
   const handleGoogleLogin = async () => {
     await googleLogin();
-    navigate('/chat');
   };
 
   return (

@@ -1,8 +1,10 @@
 import React from 'react';
 import './LeftSidebar.css';
 import assets from '../../assets/assets';
+import { useNavigate } from 'react-router-dom';
 
 const LeftSidebar = () => {
+  const navigate = useNavigate();
   return (
     <div className="ls h-full text-white flex flex-col bg-[#053448] rounded-l-2xl overflow-hidden">
       {/* nav top  */}
@@ -18,7 +20,10 @@ const LeftSidebar = () => {
             />
             {/* onclick sub menu  */}
             <div className="sub-menu hidden group-hover:block absolute  top-full right-5 w-40 p-5 rounded-l-2xl rounded-br-2xl bg-white/20 backdrop-blur-3xl text-black shadow-lg ">
-              <p className="cursor-pointer text-sm font-semibold hover:font-bold transition-all px-1 py-1 text-center bg-blue-400 hover:bg-blue-500 rounded-2xl">
+              <p
+                className="cursor-pointer text-sm font-semibold hover:font-bold transition-all px-1 py-1 text-center bg-blue-400 hover:bg-blue-500 rounded-2xl"
+                onClick={() => navigate('/profile')}
+              >
                 Edit Profile
               </p>
 
