@@ -23,7 +23,7 @@ export const uploadImageToCloudinary = async (file) => {
     const data = await res.json();
     return data.secure_url; // This is the URL you will save to Firestore
   } catch (error) {
-    console.error("Cloudinary Upload Error:", error);
+    console.error('Cloudinary Upload Error:', error);
     throw error;
   }
 };
