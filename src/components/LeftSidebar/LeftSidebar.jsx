@@ -2,12 +2,23 @@ import React, { useContext, useState } from 'react';
 import './LeftSidebar.css';
 import assets from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { auth, db } from '../../config/firebase';
 import { AppContext } from '../../context/AppContext';
+import { toast } from 'react-toastify';
 
 const LeftSidebar = () => {
-  const { userData } = useContext(AppContext);
+  const { userData, chatData } = useContext(AppContext);
   const [searchedUser, setSearchedUser] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
   const navigate = useNavigate();
@@ -27,7 +38,17 @@ const LeftSidebar = () => {
           querySnap.docs[0].data().id !== auth.currentUser.uid
         ) {
           const data = querySnap.docs[0].data();
-          setSearchedUser(data);
+          //update chat data --> if already in chat list
+          let userExist = false;
+          chatData.map((searchedUser) => {
+            if (searchedUser.rId === data.id) {
+              userExist = true;
+            }
+          });
+          //set
+          if (!userExist) {
+            setSearchedUser(data);
+          }
         } else {
           setSearchedUser(null);
         }
@@ -37,6 +58,52 @@ const LeftSidebar = () => {
       }
     } catch (error) {
       console.error('Search Error: ', error.message);
+    }
+  };
+
+  //add user's chat data whenever clicked on it
+  const addChat = async () => {
+    // cheacking it is already present or not
+    const isAlreadyAdded = chatData.some(
+      (chat) => chat.rId === searchedUser.id
+    );
+
+    if (isAlreadyAdded) {
+      setShowSearch(false);
+      setSearchedUser(null);
+      return;
+    }
+
+    //===========
+    const messageRef = collection(db, 'messages');
+    const chatsRef = collection(db, 'chats');
+    try {
+      const newMessageRef = doc(messageRef);
+      await setDoc(newMessageRef, {
+        createdAt: serverTimestamp(),
+        messages: [],
+      });
+      await updateDoc(doc(chatsRef, searchedUser.id), {
+        chatData: arrayUnion({
+          messageId: newMessageRef.id,
+          lastMessage: '',
+          rId: userData.id,
+          updatedAt: Date.now(),
+          messageSeen: true,
+        }),
+      });
+      await updateDoc(doc(chatsRef, userData.id), {
+        chatData: arrayUnion({
+          messageId: newMessageRef.id,
+          lastMessage: '',
+          rId: searchedUser.id,
+          updatedAt: Date.now(),
+          messageSeen: true,
+        }),
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
     }
   };
   return (
@@ -83,26 +150,43 @@ const LeftSidebar = () => {
 
       {/* list  */}
       <div className="ls-list flex flex-col h-[70%] overflow-y-scroll no-scrollbar text-md pb-24">
-        {Array(12)
-          .fill('')
-          .map((item, index) => (
+        {
+          //searched list
+          showSearch && searchedUser ? (
             <div
-              className="friends flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50"
-              key={index}
+              className="friend add-user  flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50"
+              onClick={addChat}
             >
               <img
-                src={assets.profile_img}
+                src={searchedUser.avatar}
                 alt=""
                 className="w-12 aspect-square rounded-full object-cover"
               />
-              <div className="flex flex-col">
-                <p>Sagnik Bera</p>
-                <span className="text-sm text-white/70">
-                  Hello , How are you?
-                </span>
-              </div>
+              <p className="text-white ">{searchedUser.name}</p>
             </div>
-          ))}
+          ) : (
+            //general list
+            chatData?.map((item, index) => (
+              <div
+                className="friends flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50"
+                key={index}
+              >
+                <img
+                  src={item.userDataDB?.avatar}
+                  alt=""
+                  className="w-12 aspect-square rounded-full object-cover"
+                />
+                <div className="flex flex-col">
+                  <p>{item.userDataDB?.name || 'Unknown User'}</p>
+                  <span className="text-sm text-white/70">
+                    {item.lastMessage || 'No messages yet'}
+                  </span>
+                </div>
+              </div>
+            ))
+          )
+        }
+
         <div className="mb-6"></div>
       </div>
     </div>
