@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import assets from '../../assets/assets';
 import './ChatBody.css';
+import { AppContext } from '../../context/AppContext';
 
 const ChatBox = () => {
+  const { userData, chatUser, messages, setMessages, messagesId } =
+    useContext(AppContextt);
+
   return (
     <div className="h-full flex flex-col bg-[#041f2b]">
       {/* ================= HEADER ================= */}

@@ -18,7 +18,16 @@ import { AppContext } from '../../context/AppContext';
 import { toast } from 'react-toastify';
 
 const LeftSidebar = () => {
-  const { userData, chatData } = useContext(AppContext);
+  const {
+    userData,
+    chatData,
+    chatUser,
+    setChatUser,
+    messages,
+    setMessages,
+    messagesId,
+    setMessagesId,
+  } = useContext(AppContext);
   const [searchedUser, setSearchedUser] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
   const navigate = useNavigate();
@@ -106,6 +115,14 @@ const LeftSidebar = () => {
       toast.error(error.message);
     }
   };
+
+  //set chat
+  const setChat = async (item) => {
+    // console.log(item);
+    setMessagesId(item.messageId);
+    setChatUser(item);
+  };
+
   return (
     <div className="ls h-full text-white flex flex-col bg-[#053448] rounded-l-2xl overflow-hidden">
       {/* nav top  */}
@@ -170,14 +187,15 @@ const LeftSidebar = () => {
               <div
                 className="friends flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50"
                 key={index}
+                onClick={() => setChat(item)}
               >
                 <img
-                  src={item.userDataDB?.avatar}
+                  src={item.userData?.avatar}
                   alt=""
                   className="w-12 aspect-square rounded-full object-cover"
                 />
                 <div className="flex flex-col">
-                  <p>{item.userDataDB?.name || 'Unknown User'}</p>
+                  <p>{item.userData?.name || 'Unknown User'}</p>
                   <span className="text-sm text-white/70">
                     {item.lastMessage || 'No messages yet'}
                   </span>

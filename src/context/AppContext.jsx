@@ -10,6 +10,9 @@ const AppContextProvider = (props) => {
 
   const [userData, setUserData] = useState(null);
   const [chatData, setChatData] = useState(null);
+  const [messagesId, setMessagesId] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [chatUser, setChatUser] = useState(null);
 
   const intervalRef = useRef(null);
 
@@ -17,14 +20,14 @@ const AppContextProvider = (props) => {
     try {
       const userRefDB = doc(db, 'users', uid);
       const userSnapDB = await getDoc(userRefDB);
-      const userDataDB = userSnapDB.data();
+      const userData = userSnapDB.data();
       // console.log(userData);
-      setUserData(userDataDB);
+      setUserData(userData);
       //if the avatar & userdata is available then navigate to chat page, otherwise profile update page
       const isProfileComplete =
-        userDataDB.avatar?.trim() &&
-        userDataDB.name?.trim() &&
-        userDataDB.bio?.trim();
+        userData.avatar?.trim() &&
+        userData.name?.trim() &&
+        userData.bio?.trim();
 
       if (isProfileComplete) {
         navigate('/chat');
@@ -60,8 +63,8 @@ const AppContextProvider = (props) => {
         for (const item of chatItems) {
           const userRef = doc(db, 'users', item.rId);
           const userSnap = await getDoc(userRef);
-          const userDataDB = userSnap.data();
-          tempData.push({ ...item, userDataDB });
+          const userData = userSnap.data();
+          tempData.push({ ...item, userData });
         }
         setChatData(tempData.sort((a, b) => b.updatedAt - a.updatedAt));
       });
@@ -82,6 +85,12 @@ const AppContextProvider = (props) => {
     chatData,
     setChatData,
     loadUserData,
+    chatUser,
+    setChatUser,
+    messages,
+    setMessages,
+    messagesId,
+    setMessagesId,
   };
 
   return (
