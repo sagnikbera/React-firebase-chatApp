@@ -84,7 +84,7 @@ const ProfileUpdate = () => {
             image ? URL.createObjectURL(image) : prevImage || assets.avatar_icon
           }
           alt="logo"
-          className="w-32 mx-auto bg-[#053448] p-2 rounded-full border border-white/20 shadow-xl"
+          className="w-32 h-32 mx-auto bg-[#053448] p-2 rounded-full border border-white/20 shadow-xl object-cover"
         />
 
         <h2 className="text-2xl font-bold text-white text-center mt-2">
