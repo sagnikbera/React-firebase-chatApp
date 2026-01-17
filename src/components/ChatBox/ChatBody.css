@@ -2,6 +2,10 @@
 .chat-msg {
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: min-content;
 }
 
 /* common message wrapper */
@@ -29,7 +33,7 @@
 .msg {
   padding: 10px 14px;
   border-radius: 18px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
   color: #e5e7eb; /* gray-300 */
   word-wrap: break-word;
@@ -53,6 +57,8 @@
   max-height: 300px;
   border-radius: 14px;
   object-fit: cover;
+  display: block;
+  margin-bottom: 2px;
 }
 
 /* info row (avatar + time) */
@@ -60,15 +66,15 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: 12px;
   color: #d1d5db; /* gray-300 */
   opacity: 0.85;
 }
 
 /* avatar image */
 .msg-info img {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   object-fit: cover;
 }
