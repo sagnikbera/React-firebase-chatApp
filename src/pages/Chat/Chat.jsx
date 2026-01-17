@@ -36,7 +36,10 @@ const Chat = () => {
           </div>
 
           {/* CENTER (CHAT) */}
-          <div className="col-span-2 h-full min-h-0">
+          <div
+            className="col-span-2 h-full min-h-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: "url('/chat_BG.png')" }}
+          >
             <ChatBox />
           </div>
 

@@ -1,21 +1,94 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import assets from '../../assets/assets';
 import './ChatBody.css';
 import { AppContext } from '../../context/AppContext';
+import {
+  arrayUnion,
+  doc,
+  getDoc,
+  onSnapshot,
+  updateDoc,
+} from 'firebase/firestore';
+import { db } from '../../config/firebase';
+import { toast } from 'react-toastify';
 
 const ChatBox = () => {
   const { userData, chatUser, messages, setMessages, messagesId } =
-    useContext(AppContextt);
+    useContext(AppContext);
+  const [input, setInput] = useState('');
 
-  return (
+  //load chat
+  useEffect(() => {
+    if (messagesId) {
+      const unSub = onSnapshot(doc(db, 'messages', messagesId), (res) => {
+        setMessages(res.data().messages.reverse());
+        // console.log('====================================');
+        // console.log(res.data().messages.reverse());
+        // console.log('====================================');
+      });
+      return () => {
+        unSub();
+      };
+    }
+  }, [messagesId]);
+
+  //message send fn
+  const sendMessage = async () => {
+    try {
+      if (input && messagesId) {
+        await updateDoc(doc(db, 'messages', messagesId), {
+          messages: arrayUnion({
+            sId: userData.id,
+            text: input,
+            createdAt: new Date(),
+          }),
+        });
+
+        const userIDs = [chatUser.rId, userData.id];
+
+        userIDs.forEach(async (id) => {
+          const userChatsRef = doc(db, 'chats', id);
+          const userChatSnapshot = await getDoc(userChatsRef);
+
+          if (userChatSnapshot.exists()) {
+            const userChatData = userChatSnapshot.data();
+            const chatIndex = userChatData.chatData.findIndex(
+              (c) => c.messageId == messagesId
+            );
+
+            userChatData.chatData[chatIndex].lastMessage = input.slice(0, 30);
+            userChatData.chatData[chatIndex].updatedAt = Date.now();
+
+            if (userChatData.chatData[chatIndex].rId === userData.id) {
+              userChatData.chatData[chatIndex].messageSeen = false;
+            }
+
+            await updateDoc(userChatsRef, {
+              chatData: userChatData.chatData,
+            });
+          }
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
+    setInput('');
+  };
+
+  return chatUser ? (
     <div className="h-full flex flex-col bg-[#041f2b]">
       {/* ================= HEADER ================= */}
       <div className="px-5 py-3 flex items-center border-b border-cyan-400/40 shrink-0">
-        <img src={assets.profile_img} alt="" className="w-12 rounded-full" />
+        <img
+          src={chatUser.userData.avatar}
+          alt=""
+          className="w-12 rounded-full"
+        />
 
         <div className="ml-3">
           <p className="text-white text-lg font-semibold leading-none">
-            Sagnik Bera
+            {chatUser.userData.name}
           </p>
           <div className="flex items-center gap-1 mt-1">
             <p className="text-white/40 text-sm">Online</p>
@@ -89,6 +162,8 @@ const ChatBox = () => {
           <input
             className="flex-1 bg-transparent outline-none text-white placeholder-white/30"
             placeholder="Send a message"
+            onChange={(e) => setInput(e.target.value)}
+            value={input}
           />
 
           <label className="bg-gray-200 p-1 rounded-full cursor-pointer">
@@ -99,9 +174,17 @@ const ChatBox = () => {
             src={assets.send_button}
             className="w-8 ml-2 cursor-pointer"
             alt=""
+            onClick={sendMessage}
           />
         </div>
       </div>
+    </div>
+  ) : (
+    <div className="chat-welcome flex flex-col items-center my-60">
+      <img src={assets.logo_icon} alt="" className="w-32" />
+      <p className="text-white/80 font-bold text-2xl">
+        Chat Anytime , anytwhere!
+      </p>
     </div>
   );
 };
