@@ -29,7 +29,6 @@ const RightSidebar = ({ onBack }) => {
 
   return chatUser ? (
     <div className="h-full text-white flex flex-col bg-[#053448] rounded-r-2xl">
-
       {/* ===== MOBILE BACK BUTTON ===== */}
       <div className="md:hidden flex items-center gap-2 p-4 border-b border-white/10">
         <button

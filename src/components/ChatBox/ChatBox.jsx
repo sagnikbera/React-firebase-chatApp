@@ -164,14 +164,10 @@ const ChatBox = ({ onBack, onOpenInfo }) => {
 
   return chatUser ? (
     <div className="h-full flex flex-col bg-[#041f2b]">
-
       {/* ================= HEADER ================= */}
       <div className="px-5 py-3 flex items-center border-b border-cyan-400/40 shrink-0">
         {/* mobile back */}
-        <button
-          onClick={onBack}
-          className="md:hidden mr-2 text-white/80"
-        >
+        <button onClick={onBack} className="md:hidden mr-2 text-white/80">
           <IoArrowBack size={20} />
         </button>
 

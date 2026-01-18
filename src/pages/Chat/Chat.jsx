@@ -52,7 +52,6 @@ const Chat = () => {
         </div>
       ) : (
         <div className="chat-container w-[95%] max-w-6xl h-[90vh] bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden shadow-2xl border border-white/20">
-
           {/* ===== DESKTOP VIEW ===== */}
           <div className="hidden md:grid md:grid-cols-4 h-full min-h-0">
             {/* LEFT */}
@@ -76,22 +75,14 @@ const Chat = () => {
 
           {/* ===== MOBILE VIEW ===== */}
           <div className="md:hidden h-full">
-            {!showChatBox && (
-              <LeftSidebar onOpenChat={openChat} />
-            )}
+            {!showChatBox && <LeftSidebar onOpenChat={openChat} />}
 
             {showChatBox && !showInfo && (
-              <ChatBox
-                onBack={closeChat}
-                onOpenInfo={openInfo}
-              />
+              <ChatBox onBack={closeChat} onOpenInfo={openInfo} />
             )}
 
-            {showChatBox && showInfo && (
-              <RightSidebar onBack={closeInfo} />
-            )}
+            {showChatBox && showInfo && <RightSidebar onBack={closeInfo} />}
           </div>
-
         </div>
       )}
     </div>
