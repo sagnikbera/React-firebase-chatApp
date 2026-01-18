@@ -1,16 +1,69 @@
-# React + Vite
+# 💬 ChatApp - Real-Time Messaging Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive, and real-time messaging application built with **React**, **Firebase**, and **Tailwind CSS**. This application allows users to search for friends, chat in real-time, and share media seamlessly.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+* **Real-Time Messaging**: Instant message delivery using Firebase Firestore `onSnapshot` listeners.
+* **User Authentication**: Secure Login and Sign-up using Firebase Authentication, including Google Login support.
+* **Media Sharing**: Capability to upload and send images directly in chats via Cloudinary integration.
+* **Global State Management**: Uses React Context API to manage user data, chat lists, and active conversations.
+* **Responsive UI**: A fully responsive layout that switches between a sidebar list and an active chat view on mobile devices.
+* **Online Presence**: Real-time "Green Dot" status indicators based on a `lastSeen` timer logic.
+* **Message Seen Status**: Visual indicators to show if a message has been read by the recipient.
+* **Password Recovery**: Integrated password reset functionality via email.
 
-## React Compiler
+## 🚀 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Frontend**: React.js, Tailwind CSS
+* **Icons**: React Icons (Io, Fa, Md, Im)
+* **Backend**: Firebase (Auth, Firestore)
+* **Storage**: Cloudinary (for Media/Images)
+* **Notifications**: React-Toastify for real-time alerts
 
-## Expanding the ESLint configuration
+## 🛠️ Installation & Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1.  **Clone the Repository**:
+    ```bash
+    git clone [https://github.com/sagnikbera/React-firebase-chatApp](https://github.com/sagnikbera/React-firebase-chatApp.git)
+    cd React-firebase-chatApp
+    ```
+
+2.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Variables**:
+    Create a `.env` file in the root directory and add your Firebase and Cloudinary credentials:
+    ```env
+    VITE_FIREBASE_API_KEY=your_api_key
+    VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+    VITE_FIREBASE_PROJECT_ID=your_project_id
+    VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+    VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+    VITE_FIREBASE_APP_ID=your_app_id
+    VITE_CLOUDINARY_URL=your_cloudinary_url
+    ```
+
+4.  **Run Development Server**:
+    ```bash
+    npm run dev
+    ```
+
+## 📸 Project Structure
+
+* `src/components`: Contains Sidebar, ChatBox, and RightSidebar components.
+* `src/context`: AppContext for managing global user and chat states.
+* `src/config`: Firebase initialization and authentication logic.
+* `src/pages`: Main pages like Login, Profile, and Chat.
+
+## 🌐 Deployment
+
+This project is optimized for deployment on **Vercel**. 
+* **Note**: Ensure you add all environment variables in the Vercel Dashboard under Project Settings.
+* **Authorized Domains**: Add your Vercel deployment URL to the "Authorized Domains" in the Firebase Console to enable Google Authentication.
+
+## 📄 License
+
+This project is licensed under the MIT License.
