@@ -3,9 +3,9 @@ import assets from '../../assets/assets';
 import { logout } from '../../config/firebase';
 import { AppContext } from '../../context/AppContext';
 import { toast } from 'react-toastify';
-import { IoCopyOutline } from 'react-icons/io5';
+import { IoCopyOutline, IoArrowBack } from 'react-icons/io5';
 
-const RightSidebar = () => {
+const RightSidebar = ({ onBack }) => {
   const { chatUser, messages } = useContext(AppContext);
   const [messageImages, setMessageImages] = useState([]);
 
@@ -29,6 +29,17 @@ const RightSidebar = () => {
 
   return chatUser ? (
     <div className="h-full text-white flex flex-col bg-[#053448] rounded-r-2xl">
+      {/* ===== MOBILE BACK BUTTON ===== */}
+      <div className="md:hidden flex items-center gap-2 p-4 border-b border-white/10">
+        <button
+          onClick={onBack}
+          className="flex items-center gap-2 text-white/80"
+        >
+          <IoArrowBack className="text-lg" />
+          <span>Back</span>
+        </button>
+      </div>
+
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto p-5">
         {/* Profile */}
@@ -49,6 +60,7 @@ const RightSidebar = () => {
               ) : null
             }
           </h3>
+
           {/* copy username  */}
           <div
             onClick={handleCopy}

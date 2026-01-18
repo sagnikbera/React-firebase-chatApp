@@ -12,8 +12,9 @@ import {
 import { db } from '../../config/firebase';
 import { toast } from 'react-toastify';
 import { uploadImageToCloudinary } from './../../utils/cloudinary';
+import { IoArrowBack, IoInformationCircleOutline } from 'react-icons/io5';
 
-const ChatBox = () => {
+const ChatBox = ({ onBack, onOpenInfo }) => {
   const { userData, chatUser, messages, setMessages, messagesId } =
     useContext(AppContext);
   const [input, setInput] = useState('');
@@ -165,6 +166,11 @@ const ChatBox = () => {
     <div className="h-full flex flex-col bg-[#041f2b]">
       {/* ================= HEADER ================= */}
       <div className="px-5 py-3 flex items-center border-b border-cyan-400/40 shrink-0">
+        {/* mobile back */}
+        <button onClick={onBack} className="md:hidden mr-2 text-white/80">
+          <IoArrowBack size={20} />
+        </button>
+
         <img
           src={chatUser.userData.avatar}
           alt=""
@@ -179,7 +185,6 @@ const ChatBox = () => {
             {Date.now() - chatUser.userData.lastSeen <= 20000 ? (
               <p className="text-white/40 text-sm">Online</p>
             ) : null}
-            {/* last seen and online dot  */}
             {
               // if the user was online for last 70 sec
               Date.now() - chatUser.userData.lastSeen <= 20000 ? (
@@ -189,10 +194,19 @@ const ChatBox = () => {
           </div>
         </div>
 
+        {/* mobile info */}
+        <button
+          onClick={onOpenInfo}
+          className="md:hidden ml-auto text-white/80"
+        >
+          <IoInformationCircleOutline size={22} />
+        </button>
+
+        {/* desktop help icon */}
         <img
           src={assets.help_icon}
           alt=""
-          className="ml-auto w-6 p-1 bg-gray-300 rounded-full cursor-pointer"
+          className="hidden md:block ml-auto w-6 p-1 bg-gray-300 rounded-full cursor-pointer"
         />
       </div>
 
@@ -201,7 +215,6 @@ const ChatBox = () => {
       <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3" ref={scrollRef}>
         <div className="chat-msg gap-4">
           {messages.map((msg, index) => (
-            // TEXT MESSAGE
             <div
               className={msg.sId === userData.id ? 's-msg' : 'r-msg'}
               key={index}
