@@ -18,7 +18,7 @@ import { auth, db } from '../../config/firebase';
 import { AppContext } from '../../context/AppContext';
 import { toast } from 'react-toastify';
 
-const LeftSidebar = () => {
+const LeftSidebar = ({ onOpenChat }) => {
   const {
     userData,
     chatData,
@@ -121,9 +121,12 @@ const LeftSidebar = () => {
   //set chat
   const setChat = async (item) => {
     try {
-      // console.log(item);
       setMessagesId(item.messageId);
       setChatUser(item);
+
+      // mobile only: open chat screen
+      onOpenChat && onOpenChat();
+
       //seen logic
       if (!item.messageSeen) {
         const userChatsRef = doc(db, 'chats', userData.id);
@@ -178,6 +181,7 @@ const LeftSidebar = () => {
             </div>
           </div>
         </div>
+
         {/* search  */}
         <div className="ls-search bg-[#041f2b] flex items-center gap-5 px-4 py-2 mt-6 rounded-2xl">
           <img src={assets.search_icon} alt="" className="max-h-5" />
@@ -192,45 +196,53 @@ const LeftSidebar = () => {
 
       {/* list  */}
       <div className="ls-list flex flex-col h-[70%] overflow-y-scroll no-scrollbar text-md pb-24">
-        {
-          //searched list
-          showSearch && searchedUser ? (
+        {showSearch && searchedUser ? (
+          <div
+            className="friend add-user flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50"
+            onClick={addChat}
+          >
+            <img
+              src={searchedUser.avatar}
+              alt=""
+              className="w-12 aspect-square rounded-full object-cover"
+            />
+            <p className="text-white ">{searchedUser.name}</p>
+          </div>
+        ) : (
+          chatData?.map((item, index) => (
             <div
-              className="friend add-user  flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50"
-              onClick={addChat}
+              className={`friends flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50 ${
+                item.messageSeen || item.messageId == messagesId
+                  ? ''
+                  : 'bg-[#041f2b]/50'
+              }`}
+              key={index}
+              onClick={() => setChat(item)}
             >
               <img
-                src={searchedUser.avatar}
+                src={item.userData?.avatar}
                 alt=""
-                className="w-12 aspect-square rounded-full object-cover"
+                className={`w-12 aspect-square rounded-full object-cover ${
+                  item.messageSeen || item.messageId == messagesId
+                    ? ''
+                    : 'border-2 border-cyan-400'
+                }`}
               />
-              <p className="text-white ">{searchedUser.name}</p>
-            </div>
-          ) : (
-            //general list
-            chatData?.map((item, index) => (
-              <div
-                className={`friends flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50 ${item.messageSeen || item.messageId == messagesId ? '' : 'bg-[#041f2b]/50'}`}
-                key={index}
-                onClick={() => setChat(item)}
-              >
-                <img
-                  src={item.userData?.avatar}
-                  alt=""
-                  className={`w-12 aspect-square rounded-full object-cover ${item.messageSeen || item.messageId == messagesId ? '' : 'border-2 border-cyan-400'}`}
-                />
-                <div className="flex flex-col">
-                  <p>{item.userData?.name || 'Unknown User'}</p>
-                  <span
-                    className={`text-sm  ${item.messageSeen || item.messageId == messagesId ? 'text-white/70' : 'text-cyan-400 font-bold'}`}
-                  >
-                    {item.lastMessage || 'No messages yet'}
-                  </span>
-                </div>
+              <div className="flex flex-col">
+                <p>{item.userData?.name || 'Unknown User'}</p>
+                <span
+                  className={`text-sm ${
+                    item.messageSeen || item.messageId == messagesId
+                      ? 'text-white/70'
+                      : 'text-cyan-400 font-bold'
+                  }`}
+                >
+                  {item.lastMessage || 'No messages yet'}
+                </span>
               </div>
-            ))
-          )
-        }
+            </div>
+          ))
+        )}
 
         <div className="mb-6"></div>
       </div>

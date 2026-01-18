@@ -10,6 +10,28 @@ const Chat = () => {
   const { userData, chatData } = useContext(AppContext);
   const [loading, setLoading] = useState(true);
 
+  // mobile view control (UI only)
+  const [showChatBox, setShowChatBox] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+
+  const openChat = () => {
+    setShowChatBox(true);
+    setShowInfo(false);
+  };
+
+  const closeChat = () => {
+    setShowChatBox(false);
+    setShowInfo(false);
+  };
+
+  const openInfo = () => {
+    setShowInfo(true);
+  };
+
+  const closeInfo = () => {
+    setShowInfo(false);
+  };
+
   useEffect(() => {
     if (chatData && userData) {
       setLoading(false);
@@ -29,24 +51,47 @@ const Chat = () => {
           </p>
         </div>
       ) : (
-        <div className="chat-container w-[95%] max-w-6xl h-[90vh] bg-white/10 backdrop-blur-md grid grid-cols-4 rounded-2xl overflow-hidden shadow-2xl border border-white/20">
-          {/* LEFT */}
-          <div className="col-span-1 h-full min-h-0">
-            <LeftSidebar />
+        <div className="chat-container w-[95%] max-w-6xl h-[90vh] bg-white/10 backdrop-blur-md rounded-2xl overflow-hidden shadow-2xl border border-white/20">
+
+          {/* ===== DESKTOP VIEW ===== */}
+          <div className="hidden md:grid md:grid-cols-4 h-full min-h-0">
+            {/* LEFT */}
+            <div className="col-span-1 h-full min-h-0">
+              <LeftSidebar />
+            </div>
+
+            {/* CENTER (CHAT) */}
+            <div
+              className="col-span-2 h-full min-h-0 bg-cover bg-center bg-no-repeat"
+              style={{ backgroundImage: "url('/chat_BG.png')" }}
+            >
+              <ChatBox />
+            </div>
+
+            {/* RIGHT */}
+            <div className="col-span-1 h-full min-h-0">
+              <RightSidebar />
+            </div>
           </div>
 
-          {/* CENTER (CHAT) */}
-          <div
-            className="col-span-2 h-full min-h-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('/chat_BG.png')" }}
-          >
-            <ChatBox />
+          {/* ===== MOBILE VIEW ===== */}
+          <div className="md:hidden h-full">
+            {!showChatBox && (
+              <LeftSidebar onOpenChat={openChat} />
+            )}
+
+            {showChatBox && !showInfo && (
+              <ChatBox
+                onBack={closeChat}
+                onOpenInfo={openInfo}
+              />
+            )}
+
+            {showChatBox && showInfo && (
+              <RightSidebar onBack={closeInfo} />
+            )}
           </div>
 
-          {/* RIGHT */}
-          <div className="col-span-1 h-full min-h-0">
-            <RightSidebar />
-          </div>
         </div>
       )}
     </div>
