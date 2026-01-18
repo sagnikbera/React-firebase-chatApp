@@ -6,8 +6,18 @@ import {
   signOut,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
-import { doc, getFirestore, setDoc, getDoc } from 'firebase/firestore';
+import {
+  doc,
+  getFirestore,
+  setDoc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 import { toast } from 'react-toastify';
 
 const firebaseConfig = {
@@ -123,5 +133,28 @@ const logout = async () => {
   }
 };
 
-export { signup, login, googleLogin, logout, auth, db };
+/* ===================== RESET PASSWORD ===================== */
+const resetPass = async (email) => {
+  if (!email) {
+    toast.error('Enter your email!');
+    return null;
+  }
+
+  try {
+    const userRef = collection(db, 'users');
+    const q = query(userRef, where('email', '==', email));
+    const querySnap = await getDocs(q);
+    if (!querySnap.empty) {
+      await sendPasswordResetEmail(auth, email);
+      toast.success('Reset email sent to your email');
+    } else {
+      toast.error('Email does not exsists');
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error(error.message);
+  }
+};
+
+export { signup, login, googleLogin, logout, auth, db, resetPass };
 export default app;

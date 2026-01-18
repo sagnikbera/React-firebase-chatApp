@@ -49,7 +49,7 @@ const AppContextProvider = (props) => {
             lastSeen: Date.now(),
           });
         }
-      }, 60000);
+      }, 15000);
     } catch (error) {}
   };
 

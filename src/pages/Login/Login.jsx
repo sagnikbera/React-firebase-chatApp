@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import assets from '../../assets/assets.js';
-import { signup, login, googleLogin } from '../../config/firebase';
+import { signup, login, googleLogin, resetPass } from '../../config/firebase';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
@@ -88,15 +88,28 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Submit */}
+        {/* Submit Button */}
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors"
         >
           {currState === 'Log In' ? 'Login Now' : 'Create Account'}
         </button>
 
-        {/* OR */}
+        {/* Forgot Password - only in login */}
+        {currState === 'Log In' && (
+          <p className="text-sm text-center text-white/70">
+            Forgot Password?{' '}
+            <span
+              onClick={() => resetPass(email)}
+              className="text-blue-400 cursor-pointer hover:underline"
+            >
+              Reset here
+            </span>
+          </p>
+        )}
+
+        {/* OR Divider */}
         <div className="flex items-center gap-3 my-2">
           <div className="flex-1 h-px bg-white/20" />
           <span className="text-white/50 text-sm">OR</span>
@@ -113,14 +126,14 @@ const Login = () => {
           Continue with Google
         </button>
 
-        {/* Toggle */}
+        {/* Toggle between Sign Up and Log In */}
         <p className="text-sm text-center text-white/70 mt-4">
           {currState === 'Sign Up' ? (
             <>
               Already have an account?{' '}
               <span
                 onClick={() => setCurrState('Log In')}
-                className="text-blue-400 cursor-pointer"
+                className="text-blue-400 cursor-pointer hover:underline"
               >
                 Click Here
               </span>
@@ -130,7 +143,7 @@ const Login = () => {
               Don't have an account?{' '}
               <span
                 onClick={() => setCurrState('Sign Up')}
-                className="text-blue-400 cursor-pointer"
+                className="text-blue-400 cursor-pointer hover:underline"
               >
                 Create Here
               </span>

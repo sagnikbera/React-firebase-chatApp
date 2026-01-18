@@ -176,8 +176,16 @@ const ChatBox = () => {
             {chatUser.userData.name}
           </p>
           <div className="flex items-center gap-1 mt-1">
-            <p className="text-white/40 text-sm">Online</p>
-            <img src={assets.green_dot} alt="" className="w-2.5" />
+            {Date.now() - chatUser.userData.lastSeen <= 20000 ? (
+              <p className="text-white/40 text-sm">Online</p>
+            ) : null}
+            {/* last seen and online dot  */}
+            {
+              // if the user was online for last 70 sec
+              Date.now() - chatUser.userData.lastSeen <= 20000 ? (
+                <img src={assets.green_dot} alt="" className="w-2.5" />
+              ) : null
+            }
           </div>
         </div>
 

@@ -6,6 +6,7 @@ import {
   arrayUnion,
   collection,
   doc,
+  getDoc,
   getDocs,
   query,
   serverTimestamp,
@@ -27,6 +28,7 @@ const LeftSidebar = () => {
     setMessages,
     messagesId,
     setMessagesId,
+    logout,
   } = useContext(AppContext);
   const [searchedUser, setSearchedUser] = useState(null);
   const [showSearch, setShowSearch] = useState(false);
@@ -118,9 +120,29 @@ const LeftSidebar = () => {
 
   //set chat
   const setChat = async (item) => {
-    // console.log(item);
-    setMessagesId(item.messageId);
-    setChatUser(item);
+    try {
+      // console.log(item);
+      setMessagesId(item.messageId);
+      setChatUser(item);
+      //seen logic
+      if (!item.messageSeen) {
+        const userChatsRef = doc(db, 'chats', userData.id);
+        const userChatsSnapshot = await getDoc(userChatsRef);
+        const userChatData = userChatsSnapshot.data();
+        const chatIndex = userChatData.chatData.findIndex(
+          (c) => c.messageId == item.messageId
+        );
+        if (chatIndex !== -1) {
+          userChatData.chatData[chatIndex].messageSeen = true;
+          await updateDoc(userChatsRef, {
+            chatData: userChatData.chatData,
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -147,7 +169,10 @@ const LeftSidebar = () => {
 
               <hr className="border-none `h-[1px]` bg-[#a5a5a5] my-1" />
 
-              <p className="cursor-pointer text-sm font-semibold hover:font-bold transition-all bg-red-400 hover:bg-red-600 px-3 py-1 text-center rounded-2xl">
+              <p
+                className="cursor-pointer text-sm font-semibold hover:font-bold transition-all bg-red-400 hover:bg-red-600 px-3 py-1 text-center rounded-2xl"
+                onClick={() => logout()}
+              >
                 Logout
               </p>
             </div>
@@ -185,18 +210,20 @@ const LeftSidebar = () => {
             //general list
             chatData?.map((item, index) => (
               <div
-                className="friends flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50"
+                className={`friends flex items-center px-4 gap-5 py-2 mt-1 cursor-pointer hover:bg-[#041f2b]/50 ${item.messageSeen || item.messageId == messagesId ? '' : 'bg-[#041f2b]/50'}`}
                 key={index}
                 onClick={() => setChat(item)}
               >
                 <img
                   src={item.userData?.avatar}
                   alt=""
-                  className="w-12 aspect-square rounded-full object-cover"
+                  className={`w-12 aspect-square rounded-full object-cover ${item.messageSeen || item.messageId == messagesId ? '' : 'border-2 border-cyan-400'}`}
                 />
                 <div className="flex flex-col">
                   <p>{item.userData?.name || 'Unknown User'}</p>
-                  <span className="text-sm text-white/70">
+                  <span
+                    className={`text-sm  ${item.messageSeen || item.messageId == messagesId ? 'text-white/70' : 'text-cyan-400 font-bold'}`}
+                  >
                     {item.lastMessage || 'No messages yet'}
                   </span>
                 </div>
