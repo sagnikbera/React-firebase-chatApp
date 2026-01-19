@@ -60,9 +60,7 @@ A modern, responsive, and real-time messaging application built with **React**, 
 
 ## 🌐 Deployment
 
-This project is optimized for deployment on **Vercel**. 
-* **Note**: Ensure you add all environment variables in the Vercel Dashboard under Project Settings.
-* **Authorized Domains**: Add your Vercel deployment URL to the "Authorized Domains" in the Firebase Console to enable Google Authentication.
+[*VERCEL*](https://x-chat-app.vercel.app/)
 
 ## 📄 License
 
